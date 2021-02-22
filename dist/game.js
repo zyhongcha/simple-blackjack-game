@@ -20,7 +20,6 @@ export default class Game {
     constructor(prevPlayerScore = 0, prevDealerScore = 0) {
         let deck = new Deck();
         this.deck = deck.deck;
-        this.hasAce = false;
         this.playerScore = prevPlayerScore;
         this.dealerScore = prevDealerScore;
         this.playerPoints = 0;
@@ -51,20 +50,21 @@ export default class Game {
                 return +card.rank;
         }
     }
-    getHandValue(hand, limit = -1, isPlayerHand) {
-        // @param limit = -1 does not limit counting card values of a hand, @param isPlayerHand checks if passed hand is coming from player, allowing different ace count
+    getHandValue(hand, limit = -1) {
+        // @param limit = -1 does not limit counting card values of a hand
         let total = 0;
+        let aceCount = 0;
         for (let i = 0; i < hand.length; i += 1) {
             if (i === limit)
                 break;
-            else if (hand[i].rank === "a" && isPlayerHand === true) {
-                this.hasAce = true;
+            else if (hand[i].rank === "a") { // has aces in hand?
+                aceCount += 1;
             }
             total += this.translateCardValue(hand[i]);
         }
-        if (this.hasAce === true && isPlayerHand === true && total > 21) {
-            // reduce ace value to 1 if total is over 21 to prevent bust
-            return total - 10;
+        if (aceCount > 0 && total > 21) {
+            // reduce ace value from 11 to 1 if total is over 21 to prevent bust
+            return total - (10 * aceCount);
         }
         return total;
     }
@@ -73,7 +73,6 @@ export default class Game {
         this.dealerPoints = 0;
         this.playerHand = [];
         this.dealerHand = [];
-        this.hasAce = false;
         this.gameResult = GameStatus.running;
         gameResultEl.innerHTML = this.gameResult;
         dealerHandEl.innerHTML = "";
@@ -95,12 +94,12 @@ export default class Game {
         }
     }
     updatePoints(countFirstCardOnly = false) {
-        this.playerPoints = this.getHandValue(this.playerHand, -1, true);
+        this.playerPoints = this.getHandValue(this.playerHand, -1);
         if (countFirstCardOnly === true) {
-            this.dealerPoints = this.getHandValue(this.dealerHand, 1, false);
+            this.dealerPoints = this.getHandValue(this.dealerHand, 1);
         }
         else {
-            this.dealerPoints = this.getHandValue(this.dealerHand, -1, false);
+            this.dealerPoints = this.getHandValue(this.dealerHand, -1);
         }
         playerPointsEl.innerHTML = this.playerPoints.toString();
         dealerPointsEl.innerHTML = this.dealerPoints.toString();
@@ -136,7 +135,7 @@ export default class Game {
             gameResultEl.innerHTML = this.gameResult;
             this.renderGameResult();
         }
-        else if (this.playerPoints === 21) {
+        else if (this.playerPoints === 21) { // assistance: disable button as hitting once more and player will go bust
             hitButton.disabled = true;
         }
     }
