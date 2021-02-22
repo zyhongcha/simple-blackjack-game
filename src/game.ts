@@ -168,7 +168,9 @@ export default class Game {
       this.gameResult = GameStatus.push
       gameResultEl.innerHTML = this.gameResult
       this.renderGameResult()
-    }
+    }  else if (this.playerPoints === 21) {
+      hitButton.disabled = true
+    } 
   }
 
   stand() {
