@@ -136,6 +136,9 @@ export default class Game {
             gameResultEl.innerHTML = this.gameResult;
             this.renderGameResult();
         }
+        else if (this.playerPoints === 21) {
+            hitButton.disabled = true;
+        }
     }
     stand() {
         this.updatePoints(); // first recalculate dealer hand value (incl. initial second card)
