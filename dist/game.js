@@ -62,9 +62,9 @@ export default class Game {
             }
             total += this.translateCardValue(hand[i]);
         }
-        if (aceCount > 0 && total > 21) {
-            // reduce ace value from 11 to 1 if total is over 21 to prevent bust
-            return total - (10 * aceCount);
+        while (aceCount > 0 && total > 21) { // reduce ace value to prevent potential busting
+            aceCount -= 1;
+            total -= 10;
         }
         return total;
     }
@@ -203,9 +203,6 @@ export default class Game {
         dealerPointsEl.innerHTML = this.dealerPoints.toString();
         let cardEl = document.querySelector(".back");
         cardEl.classList.remove("back");
-    }
-    revealDealerPoints() {
-        dealerPointsEl.innerHTML = this.dealerPoints.toString();
     }
     toggleButtons(disabled) {
         hitButton.disabled = disabled;
