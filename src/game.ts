@@ -163,10 +163,6 @@ export default class Game {
       this.gameResult = GameStatus.bust
       gameResultEl.innerHTML = this.gameResult
       this.renderGameResult()
-    } else if (this.dealerPoints === this.playerPoints) {
-      this.gameResult = GameStatus.push
-      gameResultEl.innerHTML = this.gameResult
-      this.renderGameResult()
     }  else if (this.playerPoints === 21) { // assistance: disable button as hitting once more and player will go bust
       hitButton.disabled = true
     } 
